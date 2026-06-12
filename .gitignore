@@ -1,0 +1,63 @@
+# ==========================================
+# Dependências
+# ==========================================
+node_modules/
+whatsapp-session/
+/.pnp
+.pnp.js
+
+# ==========================================
+# Logs
+# ==========================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==========================================
+# Variáveis de Ambiente (Segurança)
+# ==========================================
+.env
+.env.test
+.env.production
+.env.local
+*.pem
+
+# ==========================================
+# Build e Compilação (TypeScript/Node)
+# ==========================================
+dist/
+build/
+out/
+.tscache/
+tsconfigs/
+
+# ==========================================
+# Dados Locais e Sessões
+# ==========================================
+whatsapp-session/
+.cache/
+
+# ==========================================
+# Playwright e Testes
+# ==========================================
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+coverage/
+
+# ==========================================
+# Sistema Operacional e Editores
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
