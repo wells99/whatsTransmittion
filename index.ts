@@ -10,8 +10,8 @@ async function main() {
   const messenger = new MessageService(page, 1);
 
   // 3. Dados fictícios para o envio
-  const listaContatos = ['5585999999999','5585999999999']; 
-  const mensagem = 'Olá! Esta é uma mensagem de teste automatizada 🚀';
+  const listaContatos = ['5585994306038','558591733259']; 
+  const mensagem = 'Olá! Funcionou viu 🚀';
 
   try {
     // 4. Executa o disparo em lote

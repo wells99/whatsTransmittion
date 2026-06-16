@@ -19,14 +19,18 @@ export class WhatsAppBot {
         : '🤖 Sessão encontrada: Iniciando em BACKGROUND...'
     );
 
+     const customUserAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+
     // Adicionamos argumentos para evitar que o Chromium engasgue na inicialização
     this.context = await chromium.launchPersistentContext(this.userDataDir, {
-      headless: false, //!isFirstRun,
+      headless: !isFirstRun,
       viewport: { width: 1280, height: 720 },
+      userAgent: customUserAgent,
       args: [
         '--disable-dev-shm-usage', // Evita problemas de falta de memória compartilhada em Linux/Docker/WSL
         '--no-sandbox',            // Evita restrições de permissão do SO ao abrir o processo
-        '--disable-setuid-sandbox'
+        '--disable-setuid-sandbox',
+        '--disable-blink-features=AutomationControlled' 
       ]
     });
 
