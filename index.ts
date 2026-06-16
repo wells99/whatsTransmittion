@@ -3,24 +3,31 @@ import { MessageService } from './src/services/MessageService';
 import { ReaderServices, Contact } from './src/services/ReaderServices';
 
 async function main() {
-  // 1. Carrega os contatos de um arquivo na raiz (CSV ou XLSX)
-  // O ReaderServices.readFromFile retorna um array de objetos [{ name, phone }]
+
   let listaContatosObjetos: Contact[] = [];
   
   try {
     listaContatosObjetos = ReaderServices.readFromFile('contatos.csv');
     console.log(`📋 Carregados ${listaContatosObjetos.length} contatos do arquivo.`);
   } catch (error) {
-    console.warn('⚠️ Arquivo contatos.csv não encontrado ou erro na leitura. Usando entrada manual.');
+    console.warn('⚠️ Arquivo contatos.csv não encontrado ou erro na leitura.');
     // Exemplo de entrada manual via ReaderServices.standardize
     listaContatosObjetos = ReaderServices.standardize([
-      { nome: 'Teste Manual', telefone: '5585999999999' }
+      { nome: 'WM', telefone: '5585999999999' }
     ]);
   }
 
   // 2. Extrai apenas os números para o MessageService
   const listaNumeros = listaContatosObjetos.map(c => c.phone);
-  const mensagem = 'Você é a melhor parte dos meus dias. Meu coração sorri toda vez que penso em você. Te amo infinitamente, meu amor! \n *WhatsTransmittion*';
+  const mensagem = 'Sabe o que o zero disse para o oito? \n– Que cinto maneiro! \n \n*WhatsTransmittion*';
+
+  
+  // EXEMPLO DE USO DO GERENCIADOR DE TEMPLATES:
+  // 1. Defina um template com variáveis como {nome}
+  //const templateMensagem = 'Olá {nome}, como vai? Esta é uma mensagem personalizada! 🚀';
+  
+ 
+ 
 
   if (listaNumeros.length === 0) {
     console.log('❌ Ninguém para enviar mensagem.');
@@ -36,7 +43,10 @@ async function main() {
 
   try {
     // 5. Executa o disparo em lote
-    await messenger.sendBulk(listaNumeros, mensagem);
+     await messenger.sendBulk(listaNumeros, mensagem);
+
+     // Aqui você pode usar o TemplateService para enviar mensagens personalizadas
+   // await messenger.sendBulkPersonalized(listaContatosObjetos, templateMensagem);
     
   } catch (error) {
     console.error('Ocorreu um erro durante a execução dos disparos:', error);

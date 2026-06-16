@@ -1,5 +1,7 @@
 import type { Page } from 'playwright';
 import { PhoneService } from './PhoneService';
+import { Contact } from './ReaderServices';
+import { TemplateService } from './TemplateService';
 
 export class MessageService {
   private page: Page;
@@ -62,5 +64,26 @@ export class MessageService {
 
     }
     console.log('\n🏁 Todos os envios da lista foram processados!');
+  }
+
+  /**
+   * Processa uma lista de contatos com mensagens personalizadas via TemplateService
+   */
+  public async sendBulkPersonalized(contacts: Contact[], template: string): Promise<void> {
+    for (let i = 0; i < contacts.length; i++) {
+      const contact = contacts[i];
+      const personalizedMessage = TemplateService.process(template, contact);
+
+      await this.send(contact.phone, personalizedMessage);
+
+      if (i < contacts.length - 1) {
+        console.log(`⏱️ Aguardando ${this.delayMs / 1000} segundos até o próximo envio...`);
+        await this.page.waitForTimeout(this.delayMs);
+      } else {
+        console.log('⏱️ Aguardando 5 segundos para confirmar a saída da última mensagem...');
+        await this.page.waitForTimeout(5000);
+      }
+    }
+    console.log('\n🏁 Todos os envios personalizados foram processados!');
   }
 }
