@@ -10,7 +10,7 @@ async function main() {
     listaContatosObjetos = ReaderServices.readFromFile('contatos.csv');
     console.log(`📋 Carregados ${listaContatosObjetos.length} contatos do arquivo.`);
   } catch (error) {
-    console.warn('⚠️ Arquivo contatos.csv não encontrado ou erro na leitura.');
+    console.warn('⚠️ Arquivo de contatos não encontrado ou erro na leitura.');
     // Exemplo de entrada manual via ReaderServices.standardize
     listaContatosObjetos = ReaderServices.standardize([
       { nome: 'WM', telefone: '5585999999999' }
@@ -24,7 +24,7 @@ async function main() {
   
   // EXEMPLO DE USO DO GERENCIADOR DE TEMPLATES:
   // 1. Defina um template com variáveis como {nome}
-  //const templateMensagem = 'Olá {nome}, como vai? Esta é uma mensagem personalizada! 🚀';
+  const templateMensagem = 'fala {nome} de boas? tava pensando num churrasco 🔥 ó que tu acha ? \n \n*WhatsTransmittion*';
   
  
  
@@ -38,15 +38,15 @@ async function main() {
   const bot = new WhatsAppBot();
   const page = await bot.initialize();
 
-  // 4. Instancia o serviço de envio passando a página ativa e configurando 1 minuto de delay (opcional)
-  const messenger = new MessageService(page, 1);
+  // 4. Instancia o serviço de envio passando a página ativa (o delay agora é aleatório e humanizado)
+  const messenger = new MessageService(page);
 
   try {
     // 5. Executa o disparo em lote
-     await messenger.sendBulk(listaNumeros, mensagem);
+    // await messenger.sendBulk(listaNumeros, mensagem);
 
      // Aqui você pode usar o TemplateService para enviar mensagens personalizadas
-   // await messenger.sendBulkPersonalized(listaContatosObjetos, templateMensagem);
+    await messenger.sendBulkPersonalized(listaContatosObjetos, templateMensagem);
     
   } catch (error) {
     console.error('Ocorreu um erro durante a execução dos disparos:', error);

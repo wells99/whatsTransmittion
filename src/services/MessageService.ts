@@ -2,15 +2,13 @@ import type { Page } from 'playwright';
 import { PhoneService } from './PhoneService';
 import { Contact } from './ReaderServices';
 import { TemplateService } from './TemplateService';
+import { DelayService } from './DelayService';
 
 export class MessageService {
   private page: Page;
-  private delayMs: number;
 
-  // Deixamos o delay configurável (padrão 1 minuto)
-  constructor(page: Page, delayMinutes: number = 1) {
+  constructor(page: Page) {
     this.page = page;
-    this.delayMs = delayMinutes * 60 * 1000;
   }
 
   /**
@@ -53,13 +51,12 @@ export class MessageService {
 
       await this.send(currentNumber ?? "", text);
 
-      // Se não for o último número da lista, aplica o delay
+      // Se não for o último número da lista, aplica o delay aleatório (humanização)
       if (i < numbers.length - 1) {
-        console.log(`⏱️ Aguardando ${this.delayMs / 1000} segundos até o próximo envio...`);
-        await this.page.waitForTimeout(this.delayMs);
+        await DelayService.waitRandom(this.page);
       } else {
-        console.log('⏱️ Aguardando 5 segundos para confirmar a saída da última mensagem...');
-        await this.page.waitForTimeout(5000);
+        console.log('⏱️ Aguardando 5 segundos para garantir que o serviço não feche antes do envio da última mensagem...');
+        await DelayService.wait(this.page, 5);
       }
 
     }
@@ -77,11 +74,10 @@ export class MessageService {
       await this.send(contact.phone, personalizedMessage);
 
       if (i < contacts.length - 1) {
-        console.log(`⏱️ Aguardando ${this.delayMs / 1000} segundos até o próximo envio...`);
-        await this.page.waitForTimeout(this.delayMs);
+        await DelayService.waitRandom(this.page);
       } else {
-        console.log('⏱️ Aguardando 5 segundos para confirmar a saída da última mensagem...');
-        await this.page.waitForTimeout(5000);
+        console.log('⏱️ Aguardando 5 segundos para garantir que o serviço não feche antes do envio da última mensagem...');
+        await DelayService.wait(this.page, 5);
       }
     }
     console.log('\n🏁 Todos os envios personalizados foram processados!');
