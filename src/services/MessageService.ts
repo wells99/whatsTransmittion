@@ -1,4 +1,5 @@
 import type { Page } from 'playwright';
+import { PhoneService } from './PhoneService';
 
 export class MessageService {
   private page: Page;
@@ -14,9 +15,14 @@ export class MessageService {
    * Envia uma mensagem para um único número
    */
   public async send(phone: string, text: string): Promise<boolean> {
+    if (!PhoneService.isValid(phone)) {
+      console.error(`❌ Número inválido ignorado: ${phone}`);
+      return false;
+    }
+
     console.log(`\n⏳ Preparando envio para: ${phone}`);
 
-    const url = `https://web.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`;
+    const url = PhoneService.generateUrl(phone, text);
 
     try {
       await this.page.goto(url);

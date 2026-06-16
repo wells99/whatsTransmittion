@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import * as fs from 'fs';
 import * as path from 'path';
+import { PhoneService } from './PhoneService';
 
 export interface Contact {
   name?: string;
@@ -38,26 +39,19 @@ export class ReaderServices {
   static standardize(rawData: any[]): Contact[] {
     return rawData.map((item) => {
       if (typeof item === 'string') {
-        return { phone: this.cleanPhone(item) };
+        return { phone: PhoneService.sanitize(item) };
       }
 
       // Try to find phone and name in various possible keys
       const phone = item.phone || item.Phone || item.telefone || item.Telefone || item.contact || item.Contact || '';
       const name = item.name || item.Name || item.nome || item.Nome || '';
 
+      const sanitizedPhone = PhoneService.sanitize(phone.toString());
+
       return {
         name: name.toString().trim(),
-        phone: this.cleanPhone(phone.toString()),
+        phone: sanitizedPhone,
       };
-    }).filter(contact => contact.phone.length > 0);
-  }
-
-  /**
-   * Cleans phone number to keep only digits.
-   * @param phone Raw phone string.
-   * @returns Cleaned phone string.
-   */
-  private static cleanPhone(phone: string): string {
-    return phone.replace(/\D/g, '');
+    }).filter(contact => PhoneService.isValid(contact.phone));
   }
 }
