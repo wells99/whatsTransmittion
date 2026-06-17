@@ -1,6 +1,6 @@
 import type { Page } from 'playwright';
 import { PhoneService } from './PhoneService';
-import { Contact } from './ReaderServices';
+import { Contact } from './Contact';
 import { TemplateService } from './TemplateService';
 import { DelayService } from './DelayService';
 

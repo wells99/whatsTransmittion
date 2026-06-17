@@ -1,20 +1,24 @@
 import { WhatsAppBot } from './src/core/WhatsAppBot';
 import { MessageService } from './src/services/MessageService';
-import { ReaderServices, Contact } from './src/services/ReaderServices';
+import { ReaderServices } from './src/services/ReaderServices';
+import { Contact } from './src/services/Contact';
+import { ContactLimitService } from './src/services/ContactLimitService';
 
 async function main() {
 
   let listaContatosObjetos: Contact[] = [];
   
   try {
-    listaContatosObjetos = ReaderServices.readFromFile('contatos.csv');
+    listaContatosObjetos = await ReaderServices.readFromFile('contatos.csv');
     console.log(`📋 Carregados ${listaContatosObjetos.length} contatos do arquivo.`);
   } catch (error) {
     console.warn('⚠️ Arquivo de contatos não encontrado ou erro na leitura.');
+    console.log('📌 Usando lista de contatos de exemplo para demonstração.');
     // Exemplo de entrada manual via ReaderServices.standardize
-    listaContatosObjetos = ReaderServices.standardize([
-      { nome: 'WM', telefone: '5585999999999' }
-    ]);
+    // listaContatosObjetos = ReaderServices.standardize([
+    //   { nome: 'WM', telefone: '5585999999999' }
+    // ]);
+    // listaContatosObjetos = await ContactLimitService.checkLimits(listaContatosObjetos);
   }
 
   // 2. Extrai apenas os números para o MessageService
@@ -34,24 +38,23 @@ async function main() {
     return;
   }
 
-  // 3. Instancia e inicializa o Bot
+  //inicializando o Bot
   const bot = new WhatsAppBot();
   const page = await bot.initialize();
 
-  // 4. Instancia o serviço de envio passando a página ativa (o delay agora é aleatório e humanizado)
   const messenger = new MessageService(page);
 
   try {
     // 5. Executa o disparo em lote
     // await messenger.sendBulk(listaNumeros, mensagem);
 
-     // Aqui você pode usar o TemplateService para enviar mensagens personalizadas
+     // Aqui usamos o TemplateService para enviar mensagens personalizadas
     await messenger.sendBulkPersonalized(listaContatosObjetos, templateMensagem);
     
   } catch (error) {
     console.error('Ocorreu um erro durante a execução dos disparos:', error);
   } finally {
-    // 6. Fecha o navegador ao terminar tudo
+ 
     await bot.destroy();
   }
 }

@@ -1,4 +1,4 @@
-import { Contact } from './ReaderServices';
+import { Contact } from './Contact';
 
 export class TemplateService {
   /**

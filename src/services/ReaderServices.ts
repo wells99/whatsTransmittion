@@ -2,11 +2,8 @@ import * as XLSX from 'xlsx';
 import * as fs from 'fs';
 import * as path from 'path';
 import { PhoneService } from './PhoneService';
-
-export interface Contact {
-  name?: string;
-  phone: string;
-}
+import { Contact } from './Contact';
+import { ContactLimitService } from './ContactLimitService';
 
 export class ReaderServices {
   /**
@@ -14,7 +11,7 @@ export class ReaderServices {
    * @param fileName Name of the file in the project root.
    * @returns A list of standardized contacts.
    */
-  static readFromFile(fileName: string): Contact[] {
+  static async readFromFile(fileName: string): Promise<Contact[]> {
     const filePath = path.resolve(process.cwd(), fileName);
 
     if (!fs.existsSync(filePath)) {
@@ -28,7 +25,10 @@ export class ReaderServices {
     // Convert to JSON
     const data: any[] = XLSX.utils.sheet_to_json(worksheet);
 
-    return this.standardize(data);
+    const contacts = this.standardize(data);
+    
+    // Check limits and potentially split contacts
+    return await ContactLimitService.checkLimits(contacts);
   }
 
   /**
